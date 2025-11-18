@@ -1,14 +1,34 @@
 #![allow(unused_imports, dead_code)]
-use crate::models::{Status, Task};
-use iced::{self, Alignment, Element, Fill, widget::*, widget::{column, container}};
+use crate::models::{
+    Status, 
+    Task
+};
+use iced::{
+    self, 
+    Alignment, 
+    Element, 
+    Fill, 
+    widget::*,
+    widget::{
+        column,
+        container
+    }
+};
 use serde::{
-    Deserialize,
+    Deserialize, 
     Serialize
 };
 use std::{
     fs,
-    io::{self, Read, Write},
-    path::{Path, PathBuf},
+    io::{
+        self, 
+        Read, 
+        Write
+    },
+    path::{
+        Path, 
+        PathBuf
+    },
 };
 
 #[inline]
@@ -91,7 +111,7 @@ impl Tasks {
     fn save(&self) {
         if let Some(path) = Self::data_path() {
             if let Err(e) = Self::ensure_parent_dir(&path) {
-                log_error(&format!("Failed to create data directory: {}", e));
+                log_error(&format!("Failed to create data directory: {e}"));
                 return;
             }
             match serde_json::to_string_pretty(self) {
