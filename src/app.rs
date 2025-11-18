@@ -1,12 +1,33 @@
-use crate::models::{Status, Task};
-
-use iced::{self, Alignment, Element, Fill, widget::*, widget::{column, container}};
-
-use serde::{Deserialize, Serialize};
+use crate::models::{
+    Status, 
+    Task
+};
+use iced::{
+    self, 
+    Alignment, 
+    Element, 
+    Fill, 
+    widget::*,
+    widget::{
+        column,
+        container
+    }
+};
+use serde::{
+    Deserialize, 
+    Serialize
+};
 use std::{
     fs,
-    io::{self, Read, Write},
-    path::{Path, PathBuf},
+    io::{
+        self, 
+        Read, 
+        Write
+    },
+    path::{
+        Path, 
+        PathBuf
+    },
 };
 
 #[inline]
