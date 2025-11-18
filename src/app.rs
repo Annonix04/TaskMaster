@@ -1,8 +1,10 @@
+#![allow(unused_imports, dead_code)]
 use crate::models::{Status, Task};
-
 use iced::{self, Alignment, Element, Fill, widget::*, widget::{column, container}};
-
-use serde::{Deserialize, Serialize};
+use serde::{
+    Deserialize,
+    Serialize
+};
 use std::{
     fs,
     io::{self, Read, Write},
@@ -23,7 +25,7 @@ fn logs_path() -> Option<PathBuf> {
 #[cfg(debug_assertions)]
 #[inline]
 fn log_error(msg: &str) {
-    eprintln!("{}", msg);
+    eprintln!("{msg}");
 }
 
 #[cfg(not(debug_assertions))]
@@ -96,13 +98,12 @@ impl Tasks {
                 Ok(json) => {
                     if let Err(e) = fs::write(&path, json) {
                         log_error(&format!(
-                            "Failed to write tasks to {}: {}",
-                            path.display(),
-                            e
+                            "Failed to write tasks to {}: {e}",
+                            path.display()
                         ));
                     }
                 }
-                Err(e) => log_error(&format!("Failed to serialize tasks: {}", e)),
+                Err(e) => log_error(&format!("Failed to serialize tasks: {e}")),
             }
         } else {
             log_error("Could not resolve home directory to save tasks.");
@@ -115,9 +116,8 @@ impl Tasks {
                 let mut data = String::new();
                 if let Err(e) = file.read_to_string(&mut data) {
                     log_error(&format!(
-                        "Failed to read tasks file {}: {}",
-                        path.display(),
-                        e
+                        "Failed to read tasks file {}: {e}",
+                        path.display()
                     ));
                     return Self {
                         list: vec![],
@@ -133,9 +133,8 @@ impl Tasks {
                     }
                     Err(e) => {
                         log_error(&format!(
-                            "Failed to parse tasks file {}: {}",
-                            path.display(),
-                            e
+                            "Failed to parse tasks file {}: {e}",
+                            path.display()
                         ));
                         Self {
                             list: vec![],
@@ -147,9 +146,8 @@ impl Tasks {
             } else {
                 if let Err(e) = Self::ensure_parent_dir(&path) {
                     log_error(&format!(
-                        "Failed to prepare data directory {}: {}",
-                        path.display(),
-                        e
+                        "Failed to prepare data directory {}: {e}",
+                        path.display()
                     ));
                 }
                 Self {
