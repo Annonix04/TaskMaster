@@ -10,8 +10,6 @@ pub enum Status {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Copy, PartialEq, Default)]
 pub enum Themes {
-    #[default]
-    Default,
     KanagawaWave,
     KanagawaDragon,
     KanagawaLotus,
@@ -30,6 +28,8 @@ pub enum Themes {
     TokyoNight,
     TokyoNightLight,
     TokyoNightStorm,
+    #[default]
+    Default,
 }
 
 #[derive(Default, Serialize, Deserialize, Debug)]
