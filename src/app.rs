@@ -1,36 +1,38 @@
 #![allow(unused_imports, dead_code)]
 use crate::models::*;
 use iced::{
-    self, 
-    Alignment, 
-    Element, 
-    Fill, 
-    widget::*, 
+    self,
+    Alignment,
+    Element,
+    Fill,
+    widget::*,
     widget::{
+        text::Wrapping,
         column,
-        container
-    }, 
-    Length
+        container,
+    },
+    Length,
+    FillPortion,
 };
 use serde::{
     Deserialize, 
-    Serialize
+    Serialize,
 };
 use std::{
     fs,
     io::{
         self, 
         Read, 
-        Write
+        Write,
     },
     path::{
         Path, 
-        PathBuf
+        PathBuf,
     },
 };
 use std::fmt::{
-    Display, 
-    Formatter
+    Display,
+    Formatter,
 };
 
 #[inline]
@@ -120,97 +122,90 @@ impl Tasks {
     }
 
     fn load() -> Self {
-        if let Some(path) = Self::data_path() {
-            if let Ok(mut file) = fs::File::open(&path) {
-                let mut data = String::new();
-                if let Err(e) = file.read_to_string(&mut data) {
-                    log_error(&format!(
-                        "Failed to read tasks file {}: {e}",
-                        path.display()
-                    ));
-                    return Self {
-                        list: vec![],
-                        adding_after: None,
-                        new_title: String::new(),
-                        selected_theme: None,
-                        themes: vec![
-                            Themes::Default,
-                            Themes::KanagawaWave,
-                            Themes::Dark,
-                            Themes::Light,
-                            Themes::Nord,
-                            Themes::SolarizedDark,
-                            Themes::SolarizedLight
-                        ]
-                    };
-                }
-                match serde_json::from_str::<Self>(&data) {
-                    Ok(mut tasks) => {
-                        tasks.adding_after = None;
-                        tasks.new_title.clear();
-                        tasks
-                    }
-                    Err(e) => {
-                        log_error(&format!(
-                            "Failed to parse tasks file {}: {e}",
-                            path.display()
-                        ));
-                        Self {
-                            list: vec![],
-                            adding_after: None,
-                            new_title: String::new(),
-                            selected_theme: None,
-                            themes: vec![
-                                Themes::Default,
-                                Themes::KanagawaWave,
-                                Themes::Dark,
-                                Themes::Light,
-                                Themes::Nord,
-                                Themes::SolarizedDark,
-                                Themes::SolarizedLight
-                            ]
-                        }
-                    }
-                }
-            } else {
-                if let Err(e) = Self::ensure_parent_dir(&path) {
-                    log_error(&format!(
-                        "Failed to prepare data directory {}: {e}",
-                        path.display()
-                    ));
-                }
-                Self {
+        let themes = vec![
+            Themes::Default,
+            Themes::Dark,
+            Themes::Light,
+            Themes::SolarizedDark,
+            Themes::SolarizedLight,
+            Themes::GruvboxDark,
+            Themes::GruvboxLight,
+            Themes::KanagawaWave,
+            Themes::KanagawaDragon,
+            Themes::KanagawaLotus,
+            Themes::TokyoNight,
+            Themes::TokyoNightLight,
+            Themes::TokyoNightStorm,
+            Themes::Moonfly,
+            Themes::Nightfly,
+            Themes::Nord,
+            Themes::Ferra,
+            Themes::Dracula,
+            Themes::Oxocarbon,
+        ];
+        if let None = Self::data_path() {
+            log_error("Could not resolve home directory to load tasks.");
+            return Self {
+                list: vec![],
+                adding_after: None,
+                new_title: String::new(),
+                selected_theme: None,
+                themes
+            }
+        }
+
+        let path = Self::data_path().unwrap();
+        if let Ok(mut file) = fs::File::open(&path) {
+            let mut data = String::new();
+            if let Err(e) = file.read_to_string(&mut data) {
+                log_error(&format!(
+                    "Failed to read tasks file {}: {e}",
+                    path.display()
+                ));
+                return Self {
                     list: vec![],
                     adding_after: None,
                     new_title: String::new(),
                     selected_theme: None,
-                    themes: vec![
-                        Themes::Default,
-                        Themes::KanagawaWave,
-                        Themes::Dark,
-                        Themes::Light,
-                        Themes::Nord,
-                        Themes::SolarizedDark,
-                        Themes::SolarizedLight
-                    ]
+                    themes
+                };
+            }
+            match serde_json::from_str::<Self>(&data) {
+                Ok(mut tasks) => {
+                    tasks.adding_after = None;
+                    tasks.new_title.clear();
+                    if tasks.themes.len() != themes.len() {
+                        tasks.themes = themes.clone();
+                    }
+                    tasks
+                }
+                Err(e) => {
+                    log_error(&format!(
+                        "Failed to parse tasks file {}: {e}",
+                        path.display()
+                    ));
+                    Self {
+                        list: vec![],
+                        adding_after: None,
+                        new_title: String::new(),
+                        selected_theme: None,
+                        themes
+                    }
                 }
             }
         } else {
-            log_error("Could not resolve home directory to load tasks.");
+            if let Err(e) = Self::ensure_parent_dir(&path) {
+                log_error(&format!(
+                    "Failed to prepare data directory {}: {e}",
+                    path.display()
+                ));
+            }
             Self {
                 list: vec![],
                 adding_after: None,
                 new_title: String::new(),
                 selected_theme: None,
-                themes: vec![
-                    Themes::Default,
-                    Themes::KanagawaWave,
-                    Themes::Dark,
-                    Themes::Light,
-                    Themes::Nord,
-                    Themes::SolarizedDark,
-                    Themes::SolarizedLight
-                ]
+                themes
             }
         }
     }
@@ -224,6 +219,18 @@ impl Tasks {
             Themes::Nord => Theme::Nord,
             Themes::SolarizedDark => Theme::SolarizedDark,
             Themes::SolarizedLight => Theme::SolarizedLight,
+            Themes::Ferra => Theme::Ferra,
+            Themes::Dracula => Theme::Dracula,
+            Themes::KanagawaDragon => Theme::KanagawaDragon,
+            Themes::KanagawaLotus => Theme::KanagawaLotus,
+            Themes::Moonfly => Theme::Moonfly,
+            Themes::Nightfly => Theme::Nightfly,
+            Themes::Oxocarbon => Theme::Oxocarbon,
+            Themes::TokyoNight => Theme::TokyoNight,
+            Themes::TokyoNightLight => Theme::TokyoNightLight,
+            Themes::TokyoNightStorm => Theme::TokyoNightStorm,
+            Themes::GruvboxDark => Theme::GruvboxDark,
+            Themes::GruvboxLight => Theme::GruvboxLight,
         }
     }
 
@@ -348,7 +355,9 @@ impl Tasks {
                     .padding(4),
                 );
             } else {
-                interface = interface.push(button("Add Task").on_press(Message::AddAfter(end_index)));
+                interface = interface.push(button("Add Task")
+                    .style(button::secondary)
+                    .on_press(Message::AddAfter(end_index)));
             }
         }
         let scrollable_list = scrollable(interface.spacing(12)).height(Fill);
@@ -379,8 +388,11 @@ impl Task {
 
     fn view(&self, id: usize) -> Element<Message> {
         let mut interface = row![
-            text(&self.title).size(20),
-            text(format!(" - {:?}", self.status)).size(16),
+            text(&self.title).size(20).wrapping(Wrapping::Word).width(FillPortion(4)),
+            text(format!(" - {:?}", self.status))
+                .wrapping(Wrapping::None)
+                .size(16)
+                .style(text::success),
         ]
         .spacing(12)
         .align_y(Alignment::Center);
@@ -402,7 +414,10 @@ impl Task {
             }
         };
 
-        interface = interface.push(button("Remove").on_press(Message::Remove(id)));
+        interface = interface.push(button("Remove")
+            .style(button::danger)
+            .on_press(Message::Remove(id))
+        );
 
         container(interface).padding(4).width(Fill).into()
     }

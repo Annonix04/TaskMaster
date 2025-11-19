@@ -13,11 +13,23 @@ pub enum Themes {
     #[default]
     Default,
     KanagawaWave,
+    KanagawaDragon,
+    KanagawaLotus,
+    Nord,
+    Ferra,
+    Dracula,
     Dark,
     Light,
-    Nord,
     SolarizedDark,
     SolarizedLight,
+    GruvboxDark,
+    GruvboxLight,
+    Moonfly,
+    Nightfly,
+    Oxocarbon,
+    TokyoNight,
+    TokyoNightLight,
+    TokyoNightStorm,
 }
 
 #[derive(Default, Serialize, Deserialize, Debug)]

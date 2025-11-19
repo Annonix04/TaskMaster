@@ -13,3 +13,6 @@ chrono = "0.4.38"
 opt-level = "s"
 lto = "fat"
 strip = "debuginfo"
+
+[build-dependencies]
+winres = "0.1"
