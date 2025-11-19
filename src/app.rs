@@ -1,18 +1,16 @@
 #![allow(unused_imports, dead_code)]
-use crate::models::{
-    Status, 
-    Task
-};
+use crate::models::*;
 use iced::{
     self, 
     Alignment, 
     Element, 
     Fill, 
-    widget::*,
+    widget::*, 
     widget::{
         column,
         container
-    }
+    }, 
+    Length
 };
 use serde::{
     Deserialize, 
@@ -29,6 +27,10 @@ use std::{
         Path, 
         PathBuf
     },
+};
+use std::fmt::{
+    Display, 
+    Formatter
 };
 
 #[inline]
@@ -70,23 +72,10 @@ fn log_error(msg: &str) {
     }
 }
 
-#[derive(Debug, Clone)]
-pub enum Message {
-    Forward(usize),
-    AddAfter(usize),
-    UpdateNewTitle(String),
-    ConfirmAdd,
-    CancelAdd,
-    Remove(usize),
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct Tasks {
-    list: Vec<Task>,
-    #[serde(skip, default)]
-    adding_after: Option<usize>,
-    #[serde(skip, default)]
-    new_title: String,
+impl Display for Themes {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
+    }
 }
 
 impl Tasks {
@@ -143,6 +132,16 @@ impl Tasks {
                         list: vec![],
                         adding_after: None,
                         new_title: String::new(),
+                        selected_theme: None,
+                        themes: vec![
+                            Themes::Default,
+                            Themes::KanagawaWave,
+                            Themes::Dark,
+                            Themes::Light,
+                            Themes::Nord,
+                            Themes::SolarizedDark,
+                            Themes::SolarizedLight
+                        ]
                     };
                 }
                 match serde_json::from_str::<Self>(&data) {
@@ -160,6 +159,16 @@ impl Tasks {
                             list: vec![],
                             adding_after: None,
                             new_title: String::new(),
+                            selected_theme: None,
+                            themes: vec![
+                                Themes::Default,
+                                Themes::KanagawaWave,
+                                Themes::Dark,
+                                Themes::Light,
+                                Themes::Nord,
+                                Themes::SolarizedDark,
+                                Themes::SolarizedLight
+                            ]
                         }
                     }
                 }
@@ -174,6 +183,16 @@ impl Tasks {
                     list: vec![],
                     adding_after: None,
                     new_title: String::new(),
+                    selected_theme: None,
+                    themes: vec![
+                        Themes::Default,
+                        Themes::KanagawaWave,
+                        Themes::Dark,
+                        Themes::Light,
+                        Themes::Nord,
+                        Themes::SolarizedDark,
+                        Themes::SolarizedLight
+                    ]
                 }
             }
         } else {
@@ -182,7 +201,29 @@ impl Tasks {
                 list: vec![],
                 adding_after: None,
                 new_title: String::new(),
+                selected_theme: None,
+                themes: vec![
+                    Themes::Default,
+                    Themes::KanagawaWave,
+                    Themes::Dark,
+                    Themes::Light,
+                    Themes::Nord,
+                    Themes::SolarizedDark,
+                    Themes::SolarizedLight
+                ]
             }
+        }
+    }
+
+    pub fn app_theme(&self) -> Theme {
+        match self.selected_theme.unwrap_or(Themes::Default) {
+            Themes::Default => Theme::default(),
+            Themes::KanagawaWave => Theme::KanagawaWave,
+            Themes::Dark => Theme::Dark,
+            Themes::Light => Theme::Light,
+            Themes::Nord => Theme::Nord,
+            Themes::SolarizedDark => Theme::SolarizedDark,
+            Themes::SolarizedLight => Theme::SolarizedLight,
         }
     }
 
@@ -223,14 +264,26 @@ impl Tasks {
                     self.save();
                 }
             }
+            Message::ThemeChanged(theme) => {
+                self.selected_theme = Some(theme);
+                self.save();
+            }
         }
     }
 
     pub fn view(&self) -> Element<Message> {
-        let mut root = column![]
+        let mut root = column![
+            row![
+                container(text("Tasks:").size(48)).padding(16),
+                horizontal_space(),
+                container(pick_list(self.themes.clone(), self.selected_theme, Message::ThemeChanged)
+                    .placeholder("Theme..."))
+                .align_x(Alignment::End)
+            ]
+            .padding(16)
+            .align_y(Alignment::Center)
+        ]
             .spacing(16);
-
-        root = root.push(container(text("Tasks:").size(48)).padding(16));
 
         root = root.push(container(Rule::horizontal(1)).width(Fill));
 
