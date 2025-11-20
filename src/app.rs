@@ -146,11 +146,8 @@ impl Tasks {
         if let None = Self::data_path() {
             log_error("Could not resolve home directory to load tasks.");
             return Self {
-                list: vec![],
-                adding_after: None,
-                new_title: String::new(),
-                selected_theme: None,
-                themes
+                themes,
+                ..Self::default()
             }
         }
 
@@ -163,11 +160,8 @@ impl Tasks {
                     path.display()
                 ));
                 return Self {
-                    list: vec![],
-                    adding_after: None,
-                    new_title: String::new(),
-                    selected_theme: None,
-                    themes
+                    themes,
+                    ..Self::default()
                 };
             }
             match serde_json::from_str::<Self>(&data) {
@@ -185,11 +179,8 @@ impl Tasks {
                         path.display()
                     ));
                     Self {
-                        list: vec![],
-                        adding_after: None,
-                        new_title: String::new(),
-                        selected_theme: None,
-                        themes
+                        themes,
+                        ..Self::default()
                     }
                 }
             }
@@ -201,11 +192,8 @@ impl Tasks {
                 ));
             }
             Self {
-                list: vec![],
-                adding_after: None,
-                new_title: String::new(),
-                selected_theme: None,
-                themes
+                themes,
+                ..Self::default()
             }
         }
     }
@@ -275,6 +263,24 @@ impl Tasks {
                 self.selected_theme = Some(theme);
                 self.save();
             }
+            Message::ChangeTitle(index) => {
+                if let Some(_) = self.list.get(index) {
+                    self.editing = Some(index);
+                }
+            }
+            Message::ConfirmEdit => {
+                let index = self.editing.unwrap();
+                if let Some(task) = self.list.get_mut(index) {
+                    task.title = self.new_title.clone();
+                    self.editing = None;
+                    self.new_title.clear();
+                    self.save();
+                }
+            }
+            Message::CancelEdit => {
+                self.editing = None;
+                self.new_title.clear();
+            }
         }
     }
 
@@ -336,6 +342,20 @@ impl Tasks {
                     .spacing(8)
                     .padding(4),
                 );
+            }
+
+            if self.editing == Some(i) {
+                interface = interface.push(
+                    row![
+                        text_input("New task title...", &self.new_title)
+                            .on_input(Message::UpdateNewTitle)
+                            .padding(8)
+                            .width(Fill),
+                        button("Save").on_press(Message::ConfirmEdit),
+                        button("Cancel").on_press(Message::CancelEdit),
+                    ]
+                    .spacing(8)
+                )
             }
         }
 
@@ -414,9 +434,16 @@ impl Task {
             }
         };
 
-        interface = interface.push(button("Remove")
-            .style(button::danger)
-            .on_press(Message::Remove(id))
+        interface = interface.push(
+            button("Edit")
+                .style(button::primary)
+                .on_press(Message::ChangeTitle(id))
+        );
+
+        interface = interface.push(
+            button("Remove")
+                .style(button::danger)
+                .on_press(Message::Remove(id))
         );
 
         container(interface).padding(4).width(Fill).into()

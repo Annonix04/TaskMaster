@@ -1,7 +1,7 @@
 # TaskMaster
 Track tasks with statuses such as
 - *Pending* (not started yet)
-- *In Progress* (started but not finished)
+- *InProgress* (started but not finished)
 - *Complete*
 ---
 ## Notes:
@@ -14,6 +14,7 @@ Similarly any errors are **logged and datestamped** to the file: `~/Tasks/bin/lo
 ## TODO:
 - [x] Implement base functionality
 - [x] Theme changing
+- [x] Add edit button
 - [ ] Allow for multiple task lists
 - [ ] Add task counter for each list
 - [ ] (optional) Style elements

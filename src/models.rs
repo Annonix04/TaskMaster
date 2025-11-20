@@ -10,6 +10,8 @@ pub enum Status {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Copy, PartialEq, Default)]
 pub enum Themes {
+    #[default]
+    Default,
     KanagawaWave,
     KanagawaDragon,
     KanagawaLotus,
@@ -28,8 +30,6 @@ pub enum Themes {
     TokyoNight,
     TokyoNightLight,
     TokyoNightStorm,
-    #[default]
-    Default,
 }
 
 #[derive(Default, Serialize, Deserialize, Debug)]
@@ -45,6 +45,8 @@ pub struct Tasks {
     pub adding_after: Option<usize>,
     #[serde(skip, default)]
     pub new_title: String,
+    #[serde(skip, default)]
+    pub editing: Option<usize>,
     pub themes: Vec<Themes>,
     pub selected_theme: Option<Themes>
 }
@@ -58,4 +60,7 @@ pub enum Message {
     CancelAdd,
     Remove(usize),
     ThemeChanged(Themes),
+    ChangeTitle(usize),
+    ConfirmEdit,
+    CancelEdit,
 }
