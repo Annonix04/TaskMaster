@@ -436,7 +436,7 @@ impl Task {
 
         interface = interface.push(
             button("Edit")
-                .style(button::primary)
+                .style(button::secondary)
                 .on_press(Message::ChangeTitle(id))
         );
 
