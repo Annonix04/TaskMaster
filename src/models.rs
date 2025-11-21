@@ -82,6 +82,7 @@ pub enum Message {
     SelectList(usize),
     BackToLists,
     AddListAfter(usize),
+    UpdateListTitle(String),
     ConfirmAddList,
     CancelAddList,
     RemoveList(usize),

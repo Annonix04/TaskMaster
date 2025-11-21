@@ -85,7 +85,6 @@ impl Tasks {
         match msg {
             Message::AddAfter(index) => {
                 self.adding_after = Some(index);
-                self.new_title.clear();
             }
             Message::UpdateNewTitle(title) => {
                 self.new_title = title;
@@ -165,21 +164,6 @@ impl Tasks {
             }
 
             interface = interface.push(container(task.view(i)).padding(8));
-
-            if self.adding_after == Some(i) {
-                interface = interface.push(
-                    row![
-                        text_input("New task title...", &self.new_title)
-                            .on_input(Message::UpdateNewTitle)
-                            .padding(8)
-                            .width(Fill),
-                        button("Save").on_press(Message::ConfirmAdd),
-                        button("Cancel").on_press(Message::CancelAdd),
-                    ]
-                    .spacing(8)
-                    .padding(4),
-                );
-            }
 
             if self.editing == Some(i) {
                 interface = interface.push(
@@ -469,7 +453,7 @@ impl List {
                 self.adding_after = Some(index);
                 self.new_title.clear();
             }
-            Message::UpdateNewTitle(title) => {
+            Message::UpdateListTitle(title) => {
                 self.new_title = title;
             }
             Message::ConfirmAddList => {
@@ -592,7 +576,7 @@ impl List {
                     interface = interface.push(
                         row![
                             text_input("New list title...", &self.new_title)
-                                .on_input(Message::UpdateNewTitle)
+                                .on_input(Message::UpdateListTitle)
                                 .padding(8)
                                 .width(Fill),
                             button("Save").on_press(Message::ConfirmAddList),
@@ -625,7 +609,7 @@ impl List {
                     interface = interface.push(
                         row![
                             text_input("New list title...", &self.new_title)
-                                .on_input(Message::UpdateNewTitle)
+                                .on_input(Message::UpdateListTitle)
                                 .padding(8)
                                 .width(Fill),
                             button("Save").on_press(Message::ConfirmAddList),
@@ -640,7 +624,7 @@ impl List {
                     interface = interface.push(
                         row![
                             text_input("New list title...", &self.new_title)
-                                .on_input(Message::UpdateNewTitle)
+                                .on_input(Message::UpdateListTitle)
                                 .padding(8)
                                 .width(Fill),
                             button("Save").on_press(Message::ConfirmListEdit),
@@ -657,7 +641,7 @@ impl List {
                     interface = interface.push(
                         row![
                             text_input("New list title...", &self.new_title)
-                                .on_input(Message::UpdateNewTitle)
+                                .on_input(Message::UpdateListTitle)
                                 .padding(8)
                                 .width(Fill),
                             button("Save").on_press(Message::ConfirmAddList),
