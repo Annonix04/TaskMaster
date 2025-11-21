@@ -15,6 +15,5 @@ Similarly any errors are **logged and datestamped** to the file: `~/Tasks/bin/lo
 - [x] Implement base functionality
 - [x] Theme changing
 - [x] Add edit button
-- [ ] Allow for multiple task lists
-- [ ] Add task counter for each list
-- [ ] (optional) Style elements
+- [x] Add task counter for each list
+- [x] Allow for multiple task lists

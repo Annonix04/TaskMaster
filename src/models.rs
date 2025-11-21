@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Default, Debug, Serialize, Deserialize)]
+#[derive(Default, Debug, Serialize, Deserialize, PartialEq, PartialOrd)]
 pub enum Status {
     #[default]
     Pending,
@@ -38,9 +38,24 @@ pub struct Task {
     pub status: Status,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Tasks {
+    #[serde(default)]
+    pub title: String,
     pub list: Vec<Task>,
+    #[serde(skip, default)]
+    pub adding_after: Option<usize>,
+    #[serde(skip, default)]
+    pub new_title: String,
+    #[serde(skip, default)]
+    pub editing: Option<usize>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct List {
+    pub lists: Vec<Tasks>,
+    #[serde(skip, default)]
+    pub selected: Option<usize>,
     #[serde(skip, default)]
     pub adding_after: Option<usize>,
     #[serde(skip, default)]
@@ -59,8 +74,18 @@ pub enum Message {
     ConfirmAdd,
     CancelAdd,
     Remove(usize),
-    ThemeChanged(Themes),
     ChangeTitle(usize),
     ConfirmEdit,
     CancelEdit,
+
+    ThemeChanged(Themes),
+    SelectList(usize),
+    BackToLists,
+    AddListAfter(usize),
+    ConfirmAddList,
+    CancelAddList,
+    RemoveList(usize),
+    ChangeListTitle(usize),
+    ConfirmListEdit,
+    CancelListEdit,
 }
