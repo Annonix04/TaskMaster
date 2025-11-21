@@ -149,12 +149,14 @@ impl Tasks {
                             .padding(8)
                             .width(Fill),
                         button("Save").on_press(Message::ConfirmAdd),
-                        button("Cancel").on_press(Message::CancelAdd),
+                        button("Cancel").style(button::danger).on_press(Message::CancelAdd),
                     ]
                     .spacing(8),
                 );
             } else {
-                interface = interface.push(button("Add Task").on_press(Message::AddAfter(0)));
+                interface = interface.push(button("Add Task")
+                    .style(button::secondary)
+                    .on_press(Message::AddAfter(0)));
             }
         }
 
@@ -173,7 +175,7 @@ impl Tasks {
                             .padding(8)
                             .width(Fill),
                         button("Save").on_press(Message::ConfirmEdit),
-                        button("Cancel").on_press(Message::CancelEdit),
+                        button("Cancel").style(button::danger).on_press(Message::CancelEdit),
                     ]
                     .spacing(8)
                 )
@@ -190,7 +192,7 @@ impl Tasks {
                             .padding(8)
                             .width(Fill),
                         button("Save").on_press(Message::ConfirmAdd),
-                        button("Cancel").on_press(Message::CancelAdd),
+                        button("Cancel").style(button::danger).on_press(Message::CancelAdd),
                     ]
                     .spacing(8)
                     .padding(4),
@@ -582,12 +584,14 @@ impl List {
                                 .padding(8)
                                 .width(Fill),
                             button("Save").on_press(Message::ConfirmAddList),
-                            button("Cancel").on_press(Message::CancelAddList),
+                            button("Cancel").style(button::danger).on_press(Message::CancelAddList),
                         ]
                         .spacing(8),
                     );
                 } else {
-                    interface = interface.push(button("Add List").on_press(Message::AddListAfter(0)));
+                    interface = interface.push(button("Add List")
+                        .style(button::secondary)
+                        .on_press(Message::AddListAfter(0)));
                 }
             }
 
@@ -616,7 +620,7 @@ impl List {
                                 .padding(8)
                                 .width(Fill),
                             button("Save").on_press(Message::ConfirmAddList),
-                            button("Cancel").on_press(Message::CancelAddList),
+                            button("Cancel").style(button::danger).on_press(Message::CancelAddList),
                         ]
                         .spacing(8)
                         .padding(4),
@@ -631,7 +635,7 @@ impl List {
                                 .padding(8)
                                 .width(Fill),
                             button("Save").on_press(Message::ConfirmListEdit),
-                            button("Cancel").on_press(Message::CancelListEdit),
+                            button("Cancel").style(button::danger).on_press(Message::CancelListEdit),
                         ]
                         .spacing(8),
                     );
@@ -648,7 +652,7 @@ impl List {
                                 .padding(8)
                                 .width(Fill),
                             button("Save").on_press(Message::ConfirmAddList),
-                            button("Cancel").on_press(Message::CancelAddList),
+                            button("Cancel").style(button::danger).on_press(Message::CancelAddList),
                         ]
                         .spacing(8)
                         .padding(4),
