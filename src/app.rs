@@ -252,7 +252,7 @@ impl Task {
                     button("Start")
                         .style(button::success)
                         .on_press(Message::Forward(id))
-                ).width(Fill)
+                )
             ),
             Status::InProgress | Status::Complete => {
                 let checked = matches!(self.status, Status::Complete);
