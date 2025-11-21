@@ -239,7 +239,7 @@ impl Task {
             text(format!(" - {:?}", self.status))
                 .wrapping(Wrapping::None)
                 .size(16)
-                .style(text::success),
+                .style(text::secondary),
         ]
         .spacing(12)
         .align_y(Alignment::Center);
@@ -248,15 +248,16 @@ impl Task {
             Status::Pending => interface.push(
                 container(
                     button("Start")
+                        .style(button::success)
                         .on_press(Message::Forward(id))
                 ).width(Fill)
             ),
             Status::InProgress | Status::Complete => {
                 let checked = matches!(self.status, Status::Complete);
                 interface.push(
-                    checkbox("Complete", checked)
+                    checkbox("", checked)
+                        .style(checkbox::success)
                         .on_toggle(move |_| Message::Forward(id))
-                        .width(Fill)
                 )
             }
         };
@@ -534,7 +535,8 @@ impl List {
                 text(format!("{}/{}",
                     self.lists[sel].list.iter()
                         .filter(|t| t.status == Status::Complete).count(),
-                    self.lists[sel].list.len())).size(48),
+                    self.lists[sel].list.len())
+                ).style(text::secondary).size(48),
             ]
             .padding(16)
             .align_y(Alignment::Center);
@@ -595,7 +597,8 @@ impl List {
                 }
 
                 let row_line = row![
-                    text(&lst.title).size(30).wrapping(Wrapping::Word).width(FillPortion(4)),
+                    text(&lst.title).size(30).wrapping(Wrapping::Word),
+                    horizontal_space(),
                     button("Select").on_press(Message::SelectList(i)),
                     button("Edit").style(button::secondary).on_press(Message::ChangeListTitle(i)),
                     button("Remove").style(button::danger).on_press(Message::RemoveList(i)),
