@@ -6,7 +6,7 @@ Track tasks with statuses such as
 ---
 ## Notes:
 Task data **persists between sessions** because the list is serialized to a .json file
-in your home directory in the file: `~/Tasks/todo.json`
+in your home directory in the file: `~/Tasks/lists.json`
 
 Similarly any errors are **logged and datestamped** to the file: `~/Tasks/bin/logs.txt`
 
